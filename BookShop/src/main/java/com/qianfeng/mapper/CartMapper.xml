@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间使用的是接口名  -->
+<mapper namespace="com.qianfeng.dao.ICartDao">
+
+	<resultMap type="Cart" id="cartMap">
+		<id property="cId" column="cId"/>
+		
+		<result property="bId" column="bId"/>
+		<result property="num" column="num"/>
+		
+	</resultMap>
+	
+	<select id="findAllCart" resultType="CartAndBooks" parameterType="string">
+		SELECT cart.*,books.* from cart 
+		INNER JOIN books
+		ON cart.bId=books.bId
+		WHERE cart.userName=#{userName}
+	</select>
+	
+	<select id="findBybId" resultType="Cart" parameterType="Cart">
+		select * from cart where bId=#{bId} and userName=#{userName}
+	</select>
+	
+	<insert id="addBybId" parameterType="Cart">
+		insert into cart(bId,userName,num) values(#{bId},#{userName},#{num})
+	</insert>
+	
+	<update id="updataCartNum" parameterType="Cart">
+		UPDATE cart SET num=num+1 where cart.bId=#{bId} and userName=#{userName}
+	</update>
+	
+	<select id="searchCart" resultType="CartAndBooks" parameterType="map">
+		SELECT cart.*,books.* from cart 
+		INNER JOIN books
+		ON cart.bId=books.bId
+		WHERE cart.userName=#{userName} and books.bookName like #{bookName}
+	</select>
+	
+	
+</mapper>

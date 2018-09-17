@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间使用的是接口名  -->
+<mapper namespace="com.qianfeng.dao.IBookDao">
+
+	<resultMap type="Book" id="bookMap">
+		<id property="bId" column="bId"/>
+		
+		<result property="bookName" column="bookName"/>
+		<result property="b_Price" column="b_Price"/>
+		<result property="image" column="image"/>
+		<result property="stock" column="stock"/>
+	</resultMap>
+	
+	<!--查找所有的书籍  -->
+	<select id="findAllBook" resultType="Book">
+		select * from books
+	</select>
+	
+	<select id="count" resultType="int">
+		select count(1) from books
+	</select>
+	
+	<select id="findByIndexAndSize" parameterType="map" resultType="Book">
+		select * from books limit #{index},#{size}
+	</select>
+	
+	<select id="findByName" parameterType="string" resultType="Book">
+		select * from books where bookName like #{bookName}
+	</select>
+	
+	<select id="findBybId" parameterType="int" resultType="Book">
+		select * from books where bId=#{bId}
+	</select>
+	
+
+	
+</mapper>

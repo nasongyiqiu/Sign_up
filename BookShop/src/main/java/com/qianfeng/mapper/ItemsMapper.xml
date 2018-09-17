@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间使用的是接口名  -->
+<mapper namespace="com.qianfeng.dao.IItemsDao">
+
+	<resultMap type="Items" id="itemsMap">
+		<id property="iId" column="iId"/>
+		
+		<result property="oId" column="oId"/>
+		<result property="bId" column="bId"/>
+		<result property="createDate" column="createDate"/>
+		<result property="num" column="num"/>
+		<result property="price" column="price"/>
+		<result property="state" column="state"/>
+		<result property="total_Price" column="total_Price"/>
+		<association property="orders" resultMap="com.qianfeng.dao.IOrdersDao.ordersMap"></association>
+		<association property="book" resultMap="com.qianfeng.dao.IBookDao.bookMap"></association>
+	</resultMap>
+	
+	<insert id="addItems" parameterType="Orders">
+		insert into items(oId,bId,createDate,num,price,state,total_Price) values(#{oId},#{bId},#{createDate},#{num},#{price},#{state},#{total_Price})
+	</insert>
+	
+	<!-- <select id="findOrderByTiJian" parameterType="string" resultMap="itemsMap">
+		SELECT orders.*,items.*,books.* from orders
+		INNER JOIN items
+		ON orders.oId=items.oId
+		INNER JOIN books
+		ON items.bId=books.bId
+		where orders.userName=#{userName}
+	</select> -->
+	<select id="findOrderByTiJian" parameterType="string" resultType="OrdersAndStatus">
+		SELECT items.iId,books.image,orders.userName,items.total_Price,items.createDate,items.state from orders
+		INNER JOIN items
+		ON orders.oId=items.oId
+		INNER JOIN books
+		ON items.bId=books.bId
+		where orders.userName=#{userName}
+	</select>
+	
+	<select id="searchOrder" parameterType="map" resultType="OrdersAndStatus">
+		SELECT items.iId,books.image,books.bookName,orders.userName,items.total_Price,items.createDate,items.state from orders
+		INNER JOIN items
+		ON orders.oId=items.oId
+		INNER JOIN books
+		ON items.bId=books.bId
+		where orders.userName=#{userName} and books.bookName like #{bookName}
+	</select>
+</mapper>

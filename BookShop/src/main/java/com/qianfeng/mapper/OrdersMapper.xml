@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间使用的是接口名  -->
+<mapper namespace="com.qianfeng.dao.IOrderDao">
+
+	<resultMap type="Orders" id="ordersMap">
+		<id property="oId" column="oId"/>
+		
+		<result property="userName" column="userName"/>
+	</resultMap>
+	
+	<insert id="addOrders" parameterType="Orders">
+	<!-- 插入数据后order="AFTER"，通过last_insert_id() 获取自增的值，赋值给did属性 -->
+		<selectKey keyProperty="oId" order="AFTER" resultType="int">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into orders(userName) values(#{userName})
+	</insert>
+	
+	<select id="findByUserName" resultType="Orders" parameterType="string">
+		select * from orders where orders.userName=#{userName}
+	</select>
+	
+	<delete id="deleteBybId" parameterType="map">
+		delete from cart where bId=#{bId} and userName=#{userName}
+	</delete>
+	
+</mapper>
