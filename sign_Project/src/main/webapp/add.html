@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="media/layui/css/layui.css">
+<script src="media/layui/layui.js"></script>
+<script type="text/javascript" src="media/js/jquery.min.js"></script>
+</head>
+<body>
+<form class="layui-form" action="" lay-filter="test" onsubmit="return false;">
+  <div class="layui-form-item">
+    <label class="layui-form-label">姓名</label>
+    <div class="layui-input-block">
+      <input type="text" name="username" readonly="readonly" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+    </div>
+  </div>
+  
+  
+  
+  <div class="layui-form-item">
+    <label class="layui-form-label">电话</label>
+    <div class="layui-input-block">
+      <input type="text" name="phone" placeholder="请输入电话" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+ 
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+    </div>
+  </div>
+</form>
+
+<script type="text/javascript">
+
+layui.use('form', function(){
+  var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+  
+  //……
+  
+  //但是，如果你的HTML是动态生成的，自动渲染就会失效
+  //因此你需要在相应的地方，执行下述方法来手动渲染，跟这类似的还有 element.init();
+  //form.render();
+  
+  //自定义验证规则
+  form.verify({
+    title: function(value){
+      if(value.length < 3){
+        return '标题至少得5个字符啊';
+      }
+    }
+    
+  });
+  
+  //监听提交
+  form.on('submit(demo1)', function(data){
+    /* layer.alert(JSON.stringify(data.field), {
+      title: '最终的提交信息'
+    }) */
+    
+    $.ajax({
+    	type:"post",
+    	url:"updateStudent.do",
+    	data:data.field,
+    	dataType:"json",
+    	success:function(backData){
+    		if(backData.code == 0){
+    			//parent.location.reload(); // 父页面刷新
+		          //var t = parent.window.layui.table;
+    				alert(backData.msg);
+		          var t = parent.layui.table;// 上面写法也可以用
+		          t.reload('test');// 重新加载页面
+		          var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+		          parent.layer.close(index); //再执行关闭
+    		}
+    	}
+    })
+    
+    return false;
+  });
+  
+  
+}); 
+
+$(function(){
+	
+	$.ajax({
+		type:"get",
+		url:"findMySelf.do",
+		dataType:"json",
+		success:function(data){
+			if(data.code == 0){
+				var info = data.data;
+				$("input[name='id']").val(info.id);
+				$("input[name='username']").val(info.username);
+				$("input[name='phone']").val(info.phone);
+			}else{
+				alert(data.msg);
+			}
+		}
+	})
+	
+})
+
+</script>
+
+</body>
+</html>

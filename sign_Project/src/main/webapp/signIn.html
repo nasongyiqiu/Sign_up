@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="media/layui/css/layui.css">
+<script src="media/layui/layui.js"></script>
+<script type="text/javascript" src="media/js/jquery.min.js"></script>
+</head>
+<body>
+
+<!-- <button class="layui-btn" onclick="workClick()">上班打卡</button>
+<button class="layui-btn" onclick="closeWorkClick()">下班打卡</button> -->
+
+<form id="onwork" action="" onsubmit="return false;">
+	<input type="submit" value="上班打卡">
+</form>
+<form id="outwork" action="" onsubmit="return false;">
+	<input type="submit" value="下班打卡">
+</form>
+<button class="layui-btn" onclick="addClick()">修改个人信息</button>
+<table class="layui-hide" id="test" lay-filter="test"></table>
+ 
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+              
+<script>
+layui.use('table', function(){
+  var table = layui.table;
+  
+  table.render({
+    elem: '#test'
+    ,url:'signin.do'
+    ,title: '用户打卡表'
+    ,cols: [[
+      {field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}
+      ,{field:'username', title:'用户名', width:120, edit: 'text'}
+      ,{field:'signtime', title:'打卡时间', width:120, edit: 'text', sort: true}
+      ,{field:'signinfo', title:'打卡信息', width:80, edit: 'text'}
+      ,{field:'state', title:'打卡状态', width:80, edit: 'text'}
+      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+    ]]
+    ,page: true
+  });
+  
+  //监听行工具事件
+  table.on('tool(test)', function(obj){
+	  // 获取表格某行的数据
+    var data = obj.data;
+    //console.log(obj)
+    if(obj.event === 'del'){
+    // index表示弹出的界面的索引
+      layer.confirm('真的删除行么', function(index){
+    	  
+    	  $.ajax({
+    		  type:"delete",
+    		  url:"deleteSign?id=" + data.id,
+    		  dataType:"json",
+    		  success:function(data){
+    			  if(data.code == 0){
+    				  obj.del();
+    			      layer.close(index);
+    			      // table组件重新渲染
+    			      layer.msg("删除成功");
+    			     
+    			  }else{
+    				  layer.msg("删除失败");
+    			  }
+    		  }
+    	  })
+    	  
+        
+      });
+    } else if(obj.event === 'edit'){
+      
+    }
+  });
+});
+function addClick(){
+	layer.open({
+		  type: 2,
+		  area: ['350px', '400px'],
+		  content: 'add.html'
+		});
+}
+</script>
+
+<script type="text/javascript">
+
+	
+	$("#onwork").submit(function(){
+		$.ajax({
+			type:"post",
+			url:"onwork.do?flag=1",
+			dataType:"json",
+			success:function(data){
+				if(data.code == 0){
+					alert(data.msg);
+					/* table.reload("test"); */
+					 window.location.href="signIn.html";
+				}else {
+					alert(data.msg);
+				}
+			}
+		})
+	})
+
+	
+	$("#outwork").submit(function() {
+		$.ajax({
+			type:"post",
+			url:"onwork.do?flag=2",
+			dataType:"json",
+			success:function(data){
+				if(data.code == 0){
+					alert(data.msg);
+					/* table.reload("test"); */
+					 window.location.href="signIn.html";
+				}else {
+					alert(data.msg);
+				}
+			}
+		})
+	})
+</script>
+
+</body>
+</html>

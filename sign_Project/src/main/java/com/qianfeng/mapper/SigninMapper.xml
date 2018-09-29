@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.ISigninDao">
+  <resultMap type="Signin" id="signinMap">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="signtime" jdbcType="DATE" property="signtime" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+    <result column="signinfo" jdbcType="VARCHAR" property="signinfo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    no, name, sex, birthday, cardno, school, education, gid, flag, email, qq, phone, 
+    introno, createdate, photo
+  </sql>
+ 
+ 	<select id="findAllSignin" parameterType="map" resultType="Signin">
+ 		select * from t_signin 
+ 		INNER JOIN t_student
+		ON t_signin.uid=t_student.id
+ 		WHERE t_signin.uid=#{uid}
+ 		and t_signin.flag=#{flag}
+ 		limit #{index},#{size}
+ 	</select>
+ 	
+ 	<select id="count" parameterType="map" resultType="int">
+ 		select count(1) from t_signin
+ 		<where>
+ 			<if test="uid!=null">
+ 			and uid=#{uid}
+ 			</if>
+ 			<if test="flag!=null">
+ 			and flag=#{flag}
+ 			</if>
+ 		</where>
+ 	</select>
+ 	
+ 	<insert id="addSignin" parameterType="Signin">
+ 		insert into t_signin(uid,signtime,signinfo,flag,state) values(#{uid},#{signtime},#{signinfo},#{flag},#{state})
+ 	</insert>
+ 	<!-- <delete id="deleteSignin" parameterType="int">
+ 		delete from  t_signin where id=#{id} 
+ 	</delete> -->
+ 	<update id="deleteSignin" parameterType="int">
+ 	 update t_signin set flag=2 where id=#{id}
+ 	</update>
+ 	
+ 	<select id="findSignin" parameterType="map" resultType="Signin">
+ 		SELECT * FROM t_signin WHERE  signinfo=#{signinfo} AND uid=#{uid} AND signtime LIKE #{signtime}
+ 	</select>
+</mapper>

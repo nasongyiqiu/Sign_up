@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.IStudentDao">
+  <resultMap type="Student" id="studentMap">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    no, name, sex, birthday, cardno, school, education, gid, flag, email, qq, phone, 
+    introno, createdate, photo
+  </sql>
+ 
+ <select id="findStudentByName" parameterType="string" resultType="Student">
+ 	select * from t_student where flag=1 and username=#{username}
+ </select>
+ 
+ <insert id="addStudent" parameterType="Student">
+ 	insert into t_student(username,password,phone,flag) values(#{username},#{password},#{phone},#{flag})
+ </insert>
+ <update id="updateStudent" parameterType="Student">
+ update t_student set username=#{username},phone=#{phone} where id=#{id}
+ </update>
+</mapper>
